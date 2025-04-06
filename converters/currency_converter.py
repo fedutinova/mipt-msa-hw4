@@ -1,18 +1,13 @@
-from abc import ABC, abstractmethod
+class CurrencyConverter:
+    def __init__(self, rate_service):
+        self.rate_service = rate_service
 
-class CurrencyConverter(ABC):
-    @abstractmethod
-    def convert_usd_to_eur(self, amount):
-        pass
-
-    @abstractmethod
-    def convert_usd_to_gbp(self, amount):
-        pass
-
-    @abstractmethod
-    def convert_usd_to_rub(self, amount):
-        pass
-
-    @abstractmethod
-    def convert_usd_to_cny(self, amount):
-        pass
+    def convert(self, amount, currency_code):
+        rates = self.rate_service.rates
+        if rates is None:
+            raise Exception("Курсы обмена недоступны")
+        try:
+            rate = rates[currency_code.upper()]
+        except KeyError:
+            raise ValueError(f"Валюта {currency_code} не поддерживается")
+        return amount * rate
